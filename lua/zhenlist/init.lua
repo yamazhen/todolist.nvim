@@ -164,7 +164,6 @@ autocmd("Filetype", {
 			toggle_item()
 		end, keymap_opts)
 		keymap("n", "q", quit, keymap_opts)
-		keymap("n", "<Esc>", quit, keymap_opts)
 		keymap("n", M.config.keymap.add_item, function()
 			M.add_item({ args = "" })
 		end, keymap_opts)
