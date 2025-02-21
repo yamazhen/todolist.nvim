@@ -6,6 +6,8 @@ M.config = {
 		title = "zhenlist",
 		title_pos = "left",
 	},
+	insert_on_item_add = true,
+	insert_with_a = false,
 	keymap = {
 		add_item = "o",
 	},
@@ -17,7 +19,9 @@ local keymap_opts = { buffer = true, silent = true }
 local keymap = vim.keymap.set
 local checklist_bufnr = nil
 local checklist_winid = nil
-local file_path = vim.fn.getcwd() .. "/zhenlist.md"
+local script_path = debug.getinfo(1, "S").source:sub(2)
+local plugin_dir = script_path:match("(.*[/\\])")
+local file_path = plugin_dir .. "zhenlist.md"
 
 function M.toggle_zhenlist()
 	if checklist_winid and vim.api.nvim_win_is_valid(checklist_winid) then
@@ -68,24 +72,39 @@ end
 
 function M.add_item(args)
 	local msg = args.args or ""
-	local new_item = "- [ ]  " .. msg
+	local new_item
+	if M.config.insert_with_a then
+		new_item = "- [ ] " .. msg
+	else
+		new_item = "- [ ]  " .. msg
+	end
 	local lines = {}
 
 	if checklist_bufnr and vim.api.nvim_buf_is_valid(checklist_bufnr) then
 		lines = vim.api.nvim_buf_get_lines(checklist_bufnr, 0, -1, false)
-		table.insert(lines, new_item)
+		if #lines == 1 and lines[1] == "" then
+			lines[1] = new_item
+		else
+			table.insert(lines, new_item)
+		end
 		vim.api.nvim_buf_set_lines(checklist_bufnr, 0, -1, false, lines)
 		vim.api.nvim_buf_set_option(checklist_bufnr, "modified", false)
 		local new_line_number = vim.api.nvim_buf_line_count(checklist_bufnr)
 		if checklist_winid and vim.api.nvim_win_is_valid(checklist_winid) then
-			vim.api.nvim_win_set_cursor(checklist_winid, { new_line_number, 7 })
-			vim.cmd("startinsert")
+			vim.api.nvim_win_set_cursor(checklist_winid, { new_line_number, 6 })
+			if M.config.insert_on_item_add then
+				vim.cmd("startinsert")
+			end
 		end
 	else
 		if vim.fn.filereadable(file_path) == 1 then
 			lines = vim.fn.readfile(file_path)
 		end
-		table.insert(lines, new_item)
+		if #lines == 1 and lines[1] == "" then
+			lines[1] = new_item
+		else
+			table.insert(lines, new_item)
+		end
 		vim.fn.writefile(lines, file_path)
 	end
 end
