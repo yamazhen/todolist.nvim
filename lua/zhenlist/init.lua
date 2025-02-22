@@ -26,6 +26,9 @@ local file_path = plugin_dir .. "zhenlist.md"
 function M.toggle_zhenlist()
 	if checklist_winid and vim.api.nvim_win_is_valid(checklist_winid) then
 		vim.api.nvim_win_close(checklist_winid, true)
+		if checklist_bufnr and vim.api.nvim_buf_is_valid(checklist_bufnr) then
+			vim.api.nvim_buf_delete(checklist_bufnr, { force = true })
+		end
 		checklist_winid = nil
 		return
 	end
