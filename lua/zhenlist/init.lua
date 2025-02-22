@@ -11,7 +11,7 @@ M.config = {
 	keymap = {
 		add_item = "o",
 	},
-	disable_omni_completion = "true",
+	disable_omni_completion = true,
 }
 
 local autocmd = vim.api.nvim_create_autocmd
@@ -41,7 +41,7 @@ function M.toggle_zhenlist()
 		end)
 	end
 
-	if M.config.disable_omni_completion == "true" then
+	if M.config.disable_omni_completion then
 		vim.api.nvim_buf_set_option(checklist_bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
 	end
 
