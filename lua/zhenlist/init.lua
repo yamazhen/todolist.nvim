@@ -5,6 +5,8 @@ M.config = {
 		border = "rounded",
 		title = "zhenlist",
 		title_pos = "left",
+		height = 0.5,
+		width = 0.5,
 	},
 	insert_on_item_add = true,
 	insert_with_a = false,
@@ -51,8 +53,13 @@ function M.toggle_zhenlist()
 	vim.api.nvim_buf_set_option(checklist_bufnr, "filetype", "zhenlist")
 	vim.api.nvim_buf_set_option(checklist_bufnr, "syntax", "markdown")
 
-	local width = math.floor(vim.o.columns * 0.5)
-	local height = math.floor(vim.o.lines * 0.5)
+	local total_columns = vim.o.columns
+	local total_lines = vim.o.lines
+
+	local width = (M.config.window.width <= 1) and math.floor(total_columns * M.config.window.width)
+		or M.config.window.width
+	local height = (M.config.window.height <= 1) and math.floor(total_lines * M.config.window.height)
+		or M.config.window.height
 	local row = math.floor((vim.o.lines - height) / 2 - 1)
 	local col = math.floor((vim.o.columns - width) / 2)
 

@@ -39,6 +39,8 @@ require("zhenlist").setup({
         border = "rounded",
         title = "zhenlist",
         title_pos = "left",
+        height = 0.5,
+        width = 0.5,
     },
     insert_on_item_add = true,
     insert_with_a = false,
