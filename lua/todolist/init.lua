@@ -3,7 +3,7 @@ local M = {}
 M.config = {
 	window = {
 		border = "rounded",
-		title = "zhenlist",
+		title = "todolist",
 		title_pos = "left",
 		height = 0.5,
 		width = 0.5,
@@ -23,9 +23,9 @@ local checklist_bufnr = nil
 local checklist_winid = nil
 local script_path = debug.getinfo(1, "S").source:sub(2)
 local plugin_dir = script_path:match("(.*[/\\])")
-local file_path = plugin_dir .. "zhenlist.md"
+local file_path = plugin_dir .. "todolist.md"
 
-function M.toggle_zhenlist()
+function M.toggle_todolist()
 	if checklist_winid and vim.api.nvim_win_is_valid(checklist_winid) then
 		vim.api.nvim_win_close(checklist_winid, true)
 		if checklist_bufnr and vim.api.nvim_buf_is_valid(checklist_bufnr) then
@@ -50,7 +50,7 @@ function M.toggle_zhenlist()
 		vim.api.nvim_buf_set_option(checklist_bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
 	end
 
-	vim.api.nvim_buf_set_option(checklist_bufnr, "filetype", "zhenlist")
+	vim.api.nvim_buf_set_option(checklist_bufnr, "filetype", "todolist")
 	vim.api.nvim_buf_set_option(checklist_bufnr, "syntax", "markdown")
 
 	local total_columns = vim.o.columns
@@ -150,8 +150,8 @@ end
 
 function M.setup(opts)
 	M.config = vim.tbl_deep_extend("force", M.config, opts or {})
-	vim.api.nvim_create_user_command("ZhenListToggle", M.toggle_zhenlist, {})
-	vim.api.nvim_create_user_command("ZhenListAddItem", M.add_item, { nargs = "*" })
+	vim.api.nvim_create_user_command("todolistToggle", M.toggle_todolist, {})
+	vim.api.nvim_create_user_command("todolistAddItem", M.add_item, { nargs = "*" })
 end
 
 local function quit()
@@ -168,7 +168,7 @@ local function quit()
 end
 
 autocmd("Filetype", {
-	pattern = "zhenlist",
+	pattern = "todolist",
 	callback = function()
 		keymap("n", "<CR>", function()
 			toggle_item()
